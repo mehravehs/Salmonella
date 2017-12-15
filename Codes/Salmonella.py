@@ -77,24 +77,23 @@ data = data.fillna(0)
 
 
 ### Analaysis with all 9 classes
-
-X=data.drop(data.index[data[0]==0])
-X=X.drop(0, 1)
+X=data.drop(data.index[data[0]==0]) # The first three rows in data are removed as they are meant to be unknown for the model
+X=X.drop(0, 1) # The first column in data is the class names, which is removed from X. This is y.
 X=np.asmatrix(X)
 
-y=data[0]
+y=data[0] # first column of data
 y = y.drop(y.index[data[0]==0])
 y=y.ravel()
 
-X_bin = 1*(X>0)
 
+#X_bin = 1*(X>0)
 n_samples, n_features = X.shape
 n_digits=2
 
-
+### Leave-one-samepl-out cross-validation model
 y_pred = np.zeros(n_samples)
 y_pred_bin = np.zeros(n_samples)
-class_probs = np.zeros([n_samples,np.unique(y).size])
+class_probs = np.zeros([n_samples,np.unique(y).size]) # the probability of assigning each left out sample to each of the classes
 loo = LeaveOneOut(n_samples)
 for train_index, test_index in loo:
     print(test_index)
@@ -140,8 +139,6 @@ scipy.io.savemat('/Users/Mehraveh/Documents/MATLAB/Reza/probability_all_9.mat', 
 
 
 ### Analaysis with 8 classes after removing contaminated milk
-
-
 X=data.drop(data.index[np.where(np.logical_or(data[0]==8,data[0]==0))])
 X=X.drop(0, 1)
 X=np.asmatrix(X)
@@ -155,7 +152,7 @@ y=y.ravel()
 n_samples, n_features = X.shape
 n_digits=2
 
-
+### Leave-one-samepl-out cross-validation model
 y_pred = np.zeros(n_samples)
 y_pred_bin = np.zeros(n_samples)
 class_probs = np.zeros([n_samples,np.unique(y).size])
