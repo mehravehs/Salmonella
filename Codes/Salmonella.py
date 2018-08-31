@@ -85,27 +85,27 @@ import seaborn as sns
 
 
 
-label = pd.read_csv('/Users/Mehraveh/Documents/MATLAB/Reza/Salmonella/Species101017_labels_PTMs.csv', sep=',', delimiter=None,header=None)
+label = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species08302018_labels_PTMs.csv', sep=',', delimiter=None,header=None)
 label = label.drop(0, 1)
 label = label.iloc[0]
 
-data = pd.read_csv('/Users/Mehraveh/Documents/MATLAB/Reza/Salmonella/Species101017_clean_PTMs.csv', sep=',', delimiter=None, header=None)
+
+data = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species08302018_clean_PTMs.csv', sep=',', delimiter=None,header=None)
 data = data.fillna(0)
 
-## Analaysis with all 9 classes
-data=data.drop(data.index[data[0]==0]) # The first three rows in data are removed as they are meant to be unknown for the model
-#for i in range(7):
-#    data=data.iloc[np.where(data.iloc[:,0]!=[i+1])] # The contaminated milks are removed for this study
 
-data=data.iloc[np.where(data.iloc[:,0]!=8)] # The UNcontaminated milks are removed for this study
-data=data.iloc[np.where(data.iloc[:,0]!=9)] # The UNcontaminated milks are removed for this study
 
+### Figure 1
+#Figure 1: S. cerevesiae [fungai], S typhimurium [bacteria], H. Salinarium [archaea], HeLa [animalia], arabidupsis [plantae] (edited)
+
+classnumbers = np.array([1,4,5,7,10])
+last_class=np.asscalar(data.tail(1)[0])
+data=data.iloc[np.where(np.in1d(data.iloc[:,0], classnumbers))] # The UNcontaminated milks are removed for this study
 
 
 X=data
 X=X.iloc[:,1:] # The first column in data is the class names, which is removed from X. This is y.
 X=np.asmatrix(X).astype(float)
-
 y=data.iloc[:,0] # first column of data
 y=y.astype(int).ravel()
 
@@ -153,6 +153,6 @@ precision, recall, fscore, support = precision_recall_fscore_support(y, y_pred)
 A=[]
 for i in range(len(label)):
     A.append(label[i+1])
-sio.savemat('/Users/Mehraveh/Documents/MATLAB/Reza/Salmonella/Acc.mat',{'precision':precision, 'recall':recall})
-sio.savemat('/Users/Mehraveh/Documents/MATLAB/Reza/Salmonella/label.mat',{'label':A})
-sio.savemat('/Users/Mehraveh/Documents/MATLAB/Reza/Salmonella/imp_feature.mat',{'imp':imp_features})
+sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/Acc.mat',{'precision':precision, 'recall':recall})
+sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/label.mat',{'label':A})
+sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature.mat',{'imp':imp_features})
