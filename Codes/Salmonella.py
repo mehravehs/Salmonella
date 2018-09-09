@@ -83,24 +83,41 @@ import seaborn as sns
 #data = data.iloc[:,1:]
 
 
+figure_number=5
 
-
-label = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species08302018_labels_PTMs.csv', sep=',', delimiter=None,header=None)
+label = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09042018_labels_PTMs.csv', sep=',', delimiter=None,header=None)
 label = label.drop(0, 1)
 label = label.iloc[0]
 
 
-data = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species08302018_clean_PTMs.csv', sep=',', delimiter=None,header=None)
+data = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09042018_clean_PTMs.csv', sep=',', delimiter=None,header=None)
 data = data.fillna(0)
 
 
 
 ### Figure 1
 #Figure 1: S. cerevesiae [fungai], S typhimurium [bacteria], H. Salinarium [archaea], HeLa [animalia], arabidupsis [plantae] (edited)
+if (figure_number==1):
+    classnumbers = np.array([1,4,5,7,10])
 
-classnumbers = np.array([1,4,5,7,10])
+### Figure 2
+# Figure 2: S typhimurium, E. Coli, K. aerogenes
+if (figure_number==2):
+    classnumbers = np.array([5,6,2])
+
+if (figure_number==3):
+    classnumbers = np.array([3,4])
+
+if (figure_number==4):
+    classnumbers = np.array([1,11])
+
+if (figure_number==5):
+    classnumbers = np.arange(11)+1
+
+
 last_class=np.asscalar(data.tail(1)[0])
 data=data.iloc[np.where(np.in1d(data.iloc[:,0], classnumbers))] # The UNcontaminated milks are removed for this study
+
 
 
 X=data
@@ -109,16 +126,10 @@ X=np.asmatrix(X).astype(float)
 y=data.iloc[:,0] # first column of data
 y=y.astype(int).ravel()
 
-#for i in range(174):
-#    for j in range(65):
-#        if (type(X[i,j]) != float):
-#            print(i,j)
-            
 
 #X_bin = 1*(X>0)
 n_samples, n_features = X.shape
 n_digits=2
-
 
 
 ### Leave-one-samepl-out cross-validation model
@@ -153,6 +164,6 @@ precision, recall, fscore, support = precision_recall_fscore_support(y, y_pred)
 A=[]
 for i in range(len(label)):
     A.append(label[i+1])
-sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/Acc.mat',{'precision':precision, 'recall':recall})
+sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/Acc_Figure'+str(figure_number)+'.mat',{'precision':precision, 'recall':recall})
+sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature_Figure'+str(figure_number)+'.mat',{'imp':imp_features})
 sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/label.mat',{'label':A})
-sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature.mat',{'imp':imp_features})

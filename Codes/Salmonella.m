@@ -3,24 +3,38 @@ close all
 clc
 addpath(genpath('/Users/Mehraveh/Documents/'))
 
-load('/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature.mat')
-load('/Users/Mehraveh/Documents/Reza/Salmonella/Acc.mat')
-load('/Users/Mehraveh/Documents/Reza/Salmonella/label.mat')
+figure_number = 5
 
-Salmonella_data = csvread('/Users/Mehraveh/Documents/Reza/Salmonella/Species08302018_clean_PTMs.csv');
+load(['/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature_Figure', num2str(figure_number),'.mat'])
+load(['/Users/Mehraveh/Documents/Reza/Salmonella/Acc_Figure', num2str(figure_number),'.mat'])
+load(['/Users/Mehraveh/Documents/Reza/Salmonella/label.mat'])
+
+Salmonella_data = csvread('/Users/Mehraveh/Documents/Reza/Salmonella/Species09042018_clean_PTMs.csv');
 
 samples = {'S. cerevesiae','K. aerogenes', 'HEK', 'HeLa', 'S typhimurium',...
     'E coli', 'H Salinarium','Contaminated Milk', 'Uncontaminated Milk', ...
-    'Arabidopsis', 'S. cerevesiae-elf6'}
+    'Arabidopsis', 'S. cerevesiae-trf4'}
 
 %%%%%% Figure 1
-classnumbers = [1,4,5,7,10]
+if figure_number == 1
+    classnumbers = [1,4,5,7,10]    
+elseif figure_number == 2
+    classnumbers = [5,6,2]
+elseif figure_number == 3
+    classnumbers = [3,4]
+elseif figure_number == 4
+    classnumbers = [1,11]            
+elseif figure_number == 5
+    classnumbers = [1:11]            
+end
+
 samples = samples(classnumbers);
 
 % A
 figure
 accs = [precision;recall]'
 cmap = othercolor('Spectral4',length(precision))
+% cmap = lines(length(precision))
 c = [[0,0,0];[0.5,0.5,0.5]]
 x1 = -0.15:1:length(precision)
 x2 = 0.15:1:length(precision)+0.25
@@ -35,7 +49,7 @@ clear h
 h(1) = bar(NaN,NaN,'FaceColor',[0,0,0]);
 h(2) = bar(NaN,NaN,'FaceColor',[0.5,0.5,0.5]);
 legend(h,{'Precision';'Recall'});
-axis square
+% axis square
 set(gca,'XTick',0:1:length(precision)-1)
 set(gca,'XTickLabelRotation',45)
 set(gca,'XTickLabel',samples)
@@ -62,15 +76,15 @@ V = Salmonella_data(1:l,2:end)';
 [sorted_imp, idx] = sort(imp,'descend')
 label_sorted = label(idx,:)
 V_selected = V(idx(1:2),:)
-cmap = othercolor('Spectral4',max(Salmonella_data(:,1)))
 for i = 1:size(V,2) 
-    s=scatter(V_selected(1,i),V_selected(2,i),500,'MarkerFaceColor',cmap(Salmonella_data(i,1)-min(Salmonella_data(:,1))+1,:),'MarkerEdgeColor','none'), hold on              
+    tmp=Salmonella_data(i,1);    
+    s=scatter(V_selected(1,i),V_selected(2,i),500,'MarkerFaceColor',cmap(find(classnumbers==tmp),:),'MarkerEdgeColor','none'), hold on 
     alpha(s,0.8)
 end
 
 clear h
 for i = 1:length(precision)
-    h(i) = plot(NaN,NaN,'.','color',cmap(classnumbers(i),:),'MarkerSize',50), hold on  
+    h(i) = plot(NaN,NaN,'.','color',cmap(i,:),'MarkerSize',50), hold on  
 end
 
 
@@ -85,7 +99,11 @@ color = get(gca,'Color');
 grid on
 
 xlabel(sprintf('First important PTM (%s)',label_sorted(1,find(~isspace(label_sorted(1,:))))));
-ylabel(sprintf('Second important PTM (%s)',label_sorted(2,find(~isspace(label_sorted(2,:))))));
+if imp(idx(2)~=0)
+    ylabel(sprintf('Second important PTM (%s)',label_sorted(2,find(~isspace(label_sorted(2,:))))));
+else
+    ylabel(sprintf('Randomly chosen PTM (%s)',label_sorted(2,find(~isspace(label_sorted(2,:))))));
+end
 
 xlim([min(V_selected(1,:))-range(V_selected(1,:))/10,max(V_selected(1,:))+range(V_selected(1,:))/10])
 ylim([min(V_selected(2,:))-range(V_selected(2,:))/10, max(V_selected(2,:))+range(V_selected(2,:))/10])
