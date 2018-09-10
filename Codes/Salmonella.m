@@ -3,27 +3,27 @@ close all
 clc
 addpath(genpath('/Users/Mehraveh/Documents/'))
 
-figure_number = 5
+figure_number = 1
 
 load(['/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature_Figure', num2str(figure_number),'.mat'])
 load(['/Users/Mehraveh/Documents/Reza/Salmonella/Acc_Figure', num2str(figure_number),'.mat'])
 load(['/Users/Mehraveh/Documents/Reza/Salmonella/label.mat'])
 
-Salmonella_data = csvread('/Users/Mehraveh/Documents/Reza/Salmonella/Species09042018_clean_PTMs.csv');
+Salmonella_data = csvread('/Users/Mehraveh/Documents/Reza/Salmonella/Species09092018_clean_PTMs.csv');
 
-samples = {'S. cerevesiae','K. aerogenes', 'HEK', 'HeLa', 'S typhimurium',...
-    'E coli', 'H Salinarium','Contaminated Milk', 'Uncontaminated Milk', ...
-    'Arabidopsis', 'S. cerevesiae-trf4'}
+samples = {'S. cerevesiae','K. aerogenes', 'HEK', 'HeLa', 'S. typhimurium',...
+    'E. coli', 'H. Salinarium','Arabidopsis thaliana', 'S. cerevesiae-trf4',...
+    'S. cerevesiae-RIT1', 'Orchid'}'
 
 %%%%%% Figure 1
 if figure_number == 1
-    classnumbers = [1,4,5,7,10]    
+    classnumbers = [1,4,5,7,8]    
 elseif figure_number == 2
     classnumbers = [5,6,2]
 elseif figure_number == 3
     classnumbers = [3,4]
 elseif figure_number == 4
-    classnumbers = [1,11]            
+    classnumbers = [1,9,10]            
 elseif figure_number == 5
     classnumbers = [1:11]            
 end

@@ -83,87 +83,93 @@ import seaborn as sns
 #data = data.iloc[:,1:]
 
 
-figure_number=5
+for figure_number in np.arange(5)+1:
 
-label = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09042018_labels_PTMs.csv', sep=',', delimiter=None,header=None)
-label = label.drop(0, 1)
-label = label.iloc[0]
-
-
-data = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09042018_clean_PTMs.csv', sep=',', delimiter=None,header=None)
-data = data.fillna(0)
-
-
-
-### Figure 1
-#Figure 1: S. cerevesiae [fungai], S typhimurium [bacteria], H. Salinarium [archaea], HeLa [animalia], arabidupsis [plantae] (edited)
-if (figure_number==1):
-    classnumbers = np.array([1,4,5,7,10])
-
-### Figure 2
-# Figure 2: S typhimurium, E. Coli, K. aerogenes
-if (figure_number==2):
-    classnumbers = np.array([5,6,2])
-
-if (figure_number==3):
-    classnumbers = np.array([3,4])
-
-if (figure_number==4):
-    classnumbers = np.array([1,11])
-
-if (figure_number==5):
-    classnumbers = np.arange(11)+1
-
-
-last_class=np.asscalar(data.tail(1)[0])
-data=data.iloc[np.where(np.in1d(data.iloc[:,0], classnumbers))] # The UNcontaminated milks are removed for this study
-
-
-
-X=data
-X=X.iloc[:,1:] # The first column in data is the class names, which is removed from X. This is y.
-X=np.asmatrix(X).astype(float)
-y=data.iloc[:,0] # first column of data
-y=y.astype(int).ravel()
-
-
-#X_bin = 1*(X>0)
-n_samples, n_features = X.shape
-n_digits=2
-
-
-### Leave-one-samepl-out cross-validation model
-y_pred = np.zeros(n_samples)
-#y_pred_bin = np.zeros(n_samples)
-imp_features = np.zeros(n_features)
-#class_probs = np.zeros([n_samples,np.unique(y).size]) # the probability of assigning each left out sample to each of the classes
-
-loo = LeaveOneOut(n_samples)
-#kf = KFold(n_splits=10)
-#loo = kf.split(X)
-for train_index, test_index in loo:
-    print(test_index)
-    clf = GradientBoostingClassifier(n_estimators=100,learning_rate=0.05) 
-    clf.fit(X[train_index,:],y[train_index])
-    imp_features = imp_features + clf.feature_importances_
-    y_pred[test_index] = clf.predict(X[test_index,:])    
-#    class_probs[test_index,:] = clf.predict_proba(X[test_index,:])
-
-
-#    clf = GradientBoostingClassifier(n_estimators=100,learning_rate=0.05) 
-#    clf.fit(X_bin[train_index,:],y[train_index])
-#    y_pred_bin[test_index] = clf.predict(X_bin[test_index,:])    
-
+    label = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09092018_labels_PTMs.csv', sep=',', delimiter=None,header=None)
+    label = label.drop(0, 1)
+    label = label.iloc[0]
     
-my_score = np.mean(y_pred==y)
-#my_score_bin = np.mean(y_pred_bin==y)
-print(my_score)
-precision, recall, fscore, support = precision_recall_fscore_support(y, y_pred)
-
-
-A=[]
-for i in range(len(label)):
-    A.append(label[i+1])
-sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/Acc_Figure'+str(figure_number)+'.mat',{'precision':precision, 'recall':recall})
-sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature_Figure'+str(figure_number)+'.mat',{'imp':imp_features})
-sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/label.mat',{'label':A})
+    
+    data = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09092018_clean_PTMs.csv', sep=',', delimiter=None,header=None)
+    data = data.fillna(0)
+    
+    
+    
+    ### Figure 1
+    # S. cerevesiae [fungai], S typhimurium [bacteria], H. Salinarium [archaea], HeLa [animalia], arabidupsis [plantae] (edited)
+    if (figure_number==1):
+        classnumbers = np.array([1,4,5,7,8])
+    
+    ### Figure 2
+    # S. typhimurium, E. Coli, K. aerogenes
+    if (figure_number==2):
+        classnumbers = np.array([5,6,2])
+    
+    ### Figure 3
+    # HeLa, HEK
+    if (figure_number==3):
+        classnumbers = np.array([3,4])
+    
+    ### Figure 4
+    # S. cerevesiae, S. cerevesiae-trf4, S. cerevesiae-RIT1
+    if (figure_number==4):
+        classnumbers = np.array([1,9,10])
+    
+    ### Figure 5
+    # All
+    if (figure_number==5):
+        classnumbers = np.arange(11)+1
+    
+    
+    last_class=np.asscalar(data.tail(1)[0])
+    data=data.iloc[np.where(np.in1d(data.iloc[:,0], classnumbers))] # The UNcontaminated milks are removed for this study
+    
+    
+    
+    X=data
+    X=X.iloc[:,1:] # The first column in data is the class names, which is removed from X. This is y.
+    X=np.asmatrix(X).astype(float)
+    y=data.iloc[:,0] # first column of data
+    y=y.astype(int).ravel()
+    
+    
+    #X_bin = 1*(X>0)
+    n_samples, n_features = X.shape
+    n_digits=2
+    
+    
+    ### Leave-one-samepl-out cross-validation model
+    y_pred = np.zeros(n_samples)
+    #y_pred_bin = np.zeros(n_samples)
+    imp_features = np.zeros(n_features)
+    #class_probs = np.zeros([n_samples,np.unique(y).size]) # the probability of assigning each left out sample to each of the classes
+    
+    loo = LeaveOneOut(n_samples)
+    #kf = KFold(n_splits=10)
+    #loo = kf.split(X)
+    for train_index, test_index in loo:
+        print(test_index)
+        clf = GradientBoostingClassifier(n_estimators=100,learning_rate=0.05) 
+        clf.fit(X[train_index,:],y[train_index])
+        imp_features = imp_features + clf.feature_importances_
+        y_pred[test_index] = clf.predict(X[test_index,:])    
+    #    class_probs[test_index,:] = clf.predict_proba(X[test_index,:])
+    
+    
+    #    clf = GradientBoostingClassifier(n_estimators=100,learning_rate=0.05) 
+    #    clf.fit(X_bin[train_index,:],y[train_index])
+    #    y_pred_bin[test_index] = clf.predict(X_bin[test_index,:])    
+    
+        
+    my_score = np.mean(y_pred==y)
+    #my_score_bin = np.mean(y_pred_bin==y)
+    print(my_score)
+    precision, recall, fscore, support = precision_recall_fscore_support(y, y_pred)
+    
+    
+    A=[]
+    for i in range(len(label)):
+        A.append(label[i+1])
+    sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/Acc_Figure'+str(figure_number)+'.mat',{'precision':precision, 'recall':recall})
+    sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/imp_feature_Figure'+str(figure_number)+'.mat',{'imp':imp_features})
+    sio.savemat('/Users/Mehraveh/Documents/Reza/Salmonella/label.mat',{'label':A})
