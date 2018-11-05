@@ -83,14 +83,15 @@ import seaborn as sns
 #data = data.iloc[:,1:]
 
 
-for figure_number in np.arange(5)+1:
+for figure_number in np.arange(5)+2:
+    
 
-    label = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09092018_labels_PTMs.csv', sep=',', delimiter=None,header=None)
+    label = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species11032018_labels_PTMs.csv', sep=',', delimiter=None,header=None)
     label = label.drop(0, 1)
     label = label.iloc[0]
     
     
-    data = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species09092018_clean_PTMs.csv', sep=',', delimiter=None,header=None)
+    data = pd.read_csv('/Users/Mehraveh/Documents/Reza/Salmonella/Species11032018_clean_PTMs.csv', sep=',', delimiter=None,header=None)
     data = data.fillna(0)
     
     
@@ -98,31 +99,35 @@ for figure_number in np.arange(5)+1:
     ### Figure 1
     # S. cerevesiae [fungai], S typhimurium [bacteria], H. Salinarium [archaea], HeLa [animalia], arabidupsis [plantae] (edited)
     if (figure_number==1):
-        classnumbers = np.array([1,4,5,7,8])
+        classnumbers = np.array([1,5,8,10,11])
     
     ### Figure 2
     # S. typhimurium, E. Coli, K. aerogenes
     if (figure_number==2):
-        classnumbers = np.array([5,6,2])
+        classnumbers = np.array([7,8,4])
     
     ### Figure 3
     # HeLa, HEK
     if (figure_number==3):
-        classnumbers = np.array([3,4])
+        classnumbers = np.array([5,6])
     
     ### Figure 4
     # S. cerevesiae, S. cerevesiae-trf4, S. cerevesiae-RIT1
     if (figure_number==4):
-        classnumbers = np.array([1,9,10])
+        classnumbers = np.array([1,2,3])
     
     ### Figure 5
-    # All
+    # E. Coli, P-E. coli
     if (figure_number==5):
-        classnumbers = np.arange(11)+1
+        classnumbers = np.array([8,9])
+   
+    ### Figure 6
+    # All
+    if (figure_number==6):
+        classnumbers = np.arange(12)+1
+   
     
-    
-    last_class=np.asscalar(data.tail(1)[0])
-    data=data.iloc[np.where(np.in1d(data.iloc[:,0], classnumbers))] # The UNcontaminated milks are removed for this study
+    data=data.iloc[np.where(np.in1d(data.iloc[:,0], classnumbers))]
     
     
     
